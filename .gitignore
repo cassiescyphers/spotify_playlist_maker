@@ -1,5 +1,4 @@
 *.yml
 .ipynb_checkpoints/
 __pycache__/
-saved_queries/
 
