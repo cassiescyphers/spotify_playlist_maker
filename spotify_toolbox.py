@@ -13,6 +13,14 @@ from concurrent.futures import ThreadPoolExecutor
 from concurrent import futures
 import multiprocessing
 
+#spotipy defned, will only return 50 tracks at a time
+MAX_RESPONSE = 50 
+
+#user defined, the total number of loops my function will go through to get track ids. 100*50 = 5000.
+#increase or decrease to make queries run faster or hella slow.
+MAX_OFFSET = 100 
+
+
 with open ('config.yml') as f:
     config = yaml.load(f,Loader=yaml.FullLoader)
     
@@ -47,6 +55,10 @@ def save_pickle(data, file_path):
         
 # Query Helpers
 def run_single_query(query, sp):
+    '''
+    Runs just a single query. Will return up to MAX_RESPONSE * MAX_OFFSET tracks.
+    I'm not sure how spotify orders their responses. I'm guessing it's by popularity though.
+    '''
     track_ids = []
     df = pd.DataFrame()
     offset = 0
@@ -65,6 +77,9 @@ def run_single_query(query, sp):
 
 
 def query_for_tracks(genre_list, start_year, end_year, track_search_term):
+    '''
+    Returns tracks for all the filters given. Uses the multiprocessing library.
+    '''
     if track_search_term:
         queries = [f'track:{track_search_term} genre:{genre} year:{start_year}-{end_year}' 
                    for genre in genre_list]
@@ -81,6 +96,9 @@ def query_for_tracks(genre_list, start_year, end_year, track_search_term):
 
 
 def filter_for_audio_features(df, **audio_features):
+    '''
+    filters for the audio features passed into the audio_features dictionary
+    '''
     for key in audio_features:
         if audio_features[key]:
             if key == 'mode':
