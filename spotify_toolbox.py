@@ -12,6 +12,7 @@ import os
 from concurrent.futures import ThreadPoolExecutor
 from concurrent import futures
 import multiprocessing
+
 with open ('config.yml') as f:
     config = yaml.load(f,Loader=yaml.FullLoader)
     
@@ -33,8 +34,6 @@ sp = spotipy.Spotify(auth=token,client_credentials_manager=client_credentials_ma
 
 
 cpus = multiprocessing.cpu_count()
-MAX_RESPONSE = 50 #spotipy defned
-MAX_OFFSET = 100 #user defined
 
 #General Helpers
 def load_pickle(file_path):
@@ -96,6 +95,6 @@ def filter_for_audio_features(df, **audio_features):
 #Other API Helpers
 def create_playlist(playlist_name):
     print(f'Creating playlist "{playlist_name}"')
-    playlist = sp.user_playlist_create(username, playlist_name, public=True, description='beep boop')
+    playlist = sp.user_playlist_create(username, playlist_name, public=True,description='beep boop')
     playlist_id = playlist['id']
     return playlist_id
